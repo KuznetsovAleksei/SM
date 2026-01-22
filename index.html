@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Спортмастер - Статистика продаж</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo-section">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="logo-text">
+                        <h1>Спортмастер</h1>
+                        <p>Система отслеживания ключевых показателей продаж</p>
+                    </div>
+                </div>
+                <div class="date-display" id="current-date">
+                    <!-- Дата будет вставлена через JS -->
+                </div>
+            </div>
+            
+            <div class="stats-summary" id="summary-cards">
+                <!-- Карточки статистики будут вставлены через JS -->
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <div class="left-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-calendar-alt"></i> План на месяц</h2>
+                    <form id="month-plan-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="turnover-plan">Оборот (руб.)</label>
+                                <input type="number" id="turnover-plan" min="0" step="any" placeholder="452935.50" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="upt-plan">UPT (среднее количество товаров в чеке)</label>
+                                <input type="number" id="upt-plan" min="0" step="any" placeholder="2.14" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="sbp-plan">СБП (% от оборота)</label>
+                            <input type="number" id="sbp-plan" min="0" max="100" step="any" placeholder="35.75" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-save"></i> Сохранить план
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-plus-circle"></i> Добавить данные за день</h2>
+                    <form id="day-data-form">
+                        <div class="form-group">
+                            <label for="day-date">Дата</label>
+                            <input type="date" id="day-date" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="day-turnover">Оборот (руб.)</label>
+                                <input type="number" id="day-turnover" min="0" step="any" placeholder="452935.50" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="day-upt">UPT</label>
+                                <input type="number" id="day-upt" min="0" step="any" placeholder="2.14" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="day-sbp">СБП (%)</label>
+                            <input type="number" id="day-sbp" min="0" max="100" step="any" placeholder="35.75" required>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-block">
+                            <i class="fas fa-calendar-plus"></i> Добавить данные
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-bar"></i> Действия с данными</h2>
+                    <div class="buttons-group">
+                        <button id="show-performance-btn" class="btn btn-secondary">
+                            <i class="fas fa-tasks"></i> Выполнение плана
+                        </button>
+                        <button id="show-charts-btn" class="btn btn-primary">
+                            <i class="fas fa-chart-line"></i> Показать графики
+                        </button>
+                    </div>
+                    <div class="buttons-group">
+                        <button id="clear-data-btn" class="btn">
+                            <i class="fas fa-trash-alt"></i> Очистить данные
+                        </button>
+                        <button id="export-data-btn" class="btn">
+                            <i class="fas fa-file-export"></i> Экспорт
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="right-column">
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-history"></i> Данные по дням</h2>
+                    <div class="table-container">
+                        <table id="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Дата</th>
+                                    <th>Оборот</th>
+                                    <th>UPT</th>
+                                    <th>СБП</th>
+                                    <th>Выполнение</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body">
+                                <!-- Данные будут вставлены через JS -->
+                            </tbody>
+                        </table>
+                        <div id="empty-table" class="empty-state">
+                            <i class="fas fa-database"></i>
+                            <h3>Нет данных</h3>
+                            <p>Добавьте данные за день, чтобы увидеть статистику</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2 class="card-title"><i class="fas fa-chart-pie"></i> Графики показателей</h2>
+                    <div class="chart-container">
+                        <canvas id="stats-chart"></canvas>
+                    </div>
+                    <div id="empty-chart" class="empty-state">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Графики не загружены</h3>
+                        <p>Нажмите "Показать графики", чтобы визуализировать данные</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно выполнения плана -->
+    <div id="performance-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-trophy"></i> Выполнение плана</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="performance-content">
+                <!-- Контент будет вставлен через JS -->
+            </div>
+            <div class="modal-footer">
+                <button id="close-performance-modal" class="btn btn-primary">Закрыть</button>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Система статистики для компании "Спортмастер" &copy; 2026</p>
+            <p>Все данные хранятся в локальном хранилище вашего браузера</p>
+        </div>
+    </footer>
+    
+    <script src="1.js">
+    </script>
+</body>
+</html>
